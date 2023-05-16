@@ -9,7 +9,6 @@ export const FeedbackProvider = ({children}) =>{
     const [web3, setweb3] = useState(null)
     const [feedLength, setFeedLength] = useState()
     const [isConnected, setConnected] = useState(false)
-    const [account, setAccount] = useState([])
     useEffect(()=>{
         getFeedbackLength()
         getFeedback()
@@ -44,7 +43,6 @@ export const FeedbackProvider = ({children}) =>{
     
     async function Connected() {
         const account = await window.ethereum.request({method: 'eth_accounts'});   
-        setAccount(account)
         if (account.length) {
             setConnected(true)
         } else {
@@ -74,10 +72,11 @@ export const FeedbackProvider = ({children}) =>{
 
 
     const addFeedback = async(newFeedback) =>{
+        const accounts = await window.ethereum.request({method: 'eth_accounts'}); 
         let rating = newFeedback.rating
         let comments = newFeedback.feedback
         await fbContract.methods.addFeedback(Number(rating), comments).send({
-            from: account[0]
+            from: accounts[0]
         })
         getFeedbackLength()
         getFeedback()
