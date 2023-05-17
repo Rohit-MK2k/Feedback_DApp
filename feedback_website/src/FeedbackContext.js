@@ -9,17 +9,21 @@ export const FeedbackProvider = ({children}) =>{
     const [web3, setweb3] = useState(null)
     const [feedLength, setFeedLength] = useState()
     const [isConnected, setConnected] = useState(false)
+    const [acc, setAcc] = useState()
     useEffect(()=>{
         getFeedbackLength()
         getFeedback()
         Connected()
     },[])
-
-
+    useEffect(()=>{
+        Connected()
+    },[acc[0]])
     const onConnect = async () =>{
         if(typeof window !== "undefined" && window.ethereum !== "undefined"){
         try{
             const account = await window.ethereum.request({method: "eth_requestAccounts"})
+            const accounts = await window.ethereum.request({method: 'eth_accounts'})    
+            setAcc(accounts)
             const web = new Web3(window.ethereum)
             setweb3(web)
             if(account.length){
